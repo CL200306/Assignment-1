@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.75.1" />
+
+
+<title>Exploration of CES2019 - A Hugo website</title>
+<meta property="og:title" content="Exploration of CES2019 - A Hugo website">
+
+
+  <link href='../../../../favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="../../../../css/fonts.css" media="all">
+<link rel="stylesheet" href="../../../../css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="../../../../" class="nav-logo">
+    <img src="../../../../images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="../../../../about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">6 min read</span>
+    
+
+    <h1 class="article-title">Exploration of CES2019</h1>
+
+    
+    <span class="article-date">2020-09-23</span>
+    
+
+    <div class="article-content">
+      
+
+
+<div id="abstract" class="section level1">
+<h1>Abstract</h1>
+<p>We invested the data of 2019 CES. We summarized the data, and we performed graphs of income and religion. The result showed that most people had lower income, and most people believed in Catholic or none.</p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The Canadian Election Study data is very important for our society. We can explore a lot of interesting things from the data set. This time, our main purpose is to investigate the income and religion of Canadian citizens.</p>
+<p>First, we summarized the CES2019 data to get some important numbers (mean,median,standard deviation, minimum, maximum) of it. We found that most people had lower income. Then, we created a bar plot to study the religion of Canadian Citizen. We could see the diversity of religions in Canada through the graph. Lastly, we created a histogram to see the distribution of income. We found that it was heavily right skewed, which means a few Canadians had extremely higher income than others.</p>
+<p>However, there are still some weaknesses of our research. For example, we should not consider 0 income observations when we summarize the data. At the same time, the sample size was too small (only 37822 citizens cannot represent the whole country). Next time, we want to have larger sample size and cleaner data.</p>
+<pre class="r"><code>#install.packages(&quot;devtools&quot;)
+#devtools::install_github(&quot;hodgettsp/cesR&quot;)
+cesR::get_decon()
+## TO CITE THIS SURVEY FILE: Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, &#39;2019 Canadian Election Study - Online Survey&#39;,
+##            https://doi.org/10.7910/DVN/DUS88V, Harvard Dataverse, V1
+## LINK: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DUS88V</code></pre>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>The CES data is based on the Canadian Election Study of 2019. In our data, we have 37822 observations (one observation refers to one person), and 22 variables. Variables include citizenship, year of birth, gender, territory, education, income, religion, employment, etc.</p>
+<pre class="r"><code>head(decon)
+## # A tibble: 6 x 22
+##   ces_code citizenship yob   gender province_territ… education lr    lr_bef
+##   &lt;chr&gt;    &lt;fct&gt;       &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;            &lt;fct&gt;     &lt;chr&gt; &lt;chr&gt; 
+## 1 ces2019… Canadian c… 1989  A wom… Quebec           Master&#39;s… 2     &lt;NA&gt;  
+## 2 ces2019… Canadian c… 1998  A wom… Quebec           Master&#39;s… 2     &lt;NA&gt;  
+## 3 ces2019… Canadian c… 2000  A wom… Ontario          Some uni… 4     4     
+## 4 ces2019… Canadian c… 1998  A man  Ontario          Some uni… 7     7     
+## 5 ces2019… Canadian c… 2000  A wom… Ontario          Complete… 4     4     
+## 6 ces2019… Canadian c… 1999  A wom… Ontario          Some uni… 4     4     
+## # … with 14 more variables: lr_aft &lt;chr&gt;, religion &lt;fct&gt;,
+## #   sexuality_selected &lt;fct&gt;, sexuality_text &lt;chr&gt;, language_eng &lt;fct&gt;,
+## #   language_fr &lt;fct&gt;, language_abgl &lt;fct&gt;, employment &lt;fct&gt;, income &lt;dbl&gt;,
+## #   income_cat &lt;fct&gt;, marital &lt;fct&gt;, econ_retro &lt;fct&gt;, econ_fed &lt;fct&gt;,
+## #   econ_self &lt;fct&gt;</code></pre>
+<p>Now we want to sort the CES data to help us investigate the variables we are focusing.</p>
+<pre class="r"><code>decon &lt;- 
+  decon %&gt;% 
+  filter(income &lt; 1000000)
+
+decon_rein= decon %&gt;% 
+  select(religion, income)
+
+
+decon %&gt;% summarise(mean_income = mean(income), sd_income = sd(income), median_income = median(income), max_income = max(income), min_income = min(income))
+## # A tibble: 1 x 5
+##   mean_income sd_income median_income max_income min_income
+##         &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1      84318.    68724.         72000     999000          0</code></pre>
+</div>
+<div id="data-discussion" class="section level1">
+<h1>Data Discussion</h1>
+<p>The variables we focus on are income and religion. We want to discuss the data of the income first because religion is categorical variable.</p>
+<p>The mean income in 2019 CES is 84319.88, the standard deviation is 68723.6, the median income is 72000, the max is 999000 and the minimum income is 0.</p>
+<p>The mean income might not be representative, as many observations has no income. The standard deviation of the data is really large, which indicates that the data points are spread out over a large range of values, which we can also see from the minimum and the maximum income. The median income is lower than the mean, which represent that most people have lower income.</p>
+<p>Now, we want to see the graph of religions of people in 2019 CES. So we create a barplot.</p>
+<pre class="r"><code>decon_rein %&gt;% 
+  ggplot(aes(x = religion))+
+  geom_bar()+coord_flip()+labs( title = &quot;Distribution of religions in CES&quot;) </code></pre>
+<p><img src="../../../../post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Now, we want to see the distribution of income in 2019 CES.</p>
+<pre class="r"><code>decon %&gt;% 
+  ggplot(aes(x = income)) +
+  geom_histogram() +
+  labs(x = &quot;Income&quot;,
+       y = &quot;Number&quot;,
+       title = &quot;Distribution of income in 2019 CES&quot;,
+       caption = &quot;Source: Stephenson, Harell, Rubenson, Loewen, 2020.&quot;) +
+  theme_bw()
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="../../../../post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="graph-disscusion" class="section level1">
+<h1>Graph Disscusion</h1>
+<p>In the graph of religion, we find that most observations are Catholic or Atheist. The amount of Catholic and Atheist are extremely larger than the other religions. Beside, we find that 5 categories have the least amount of observations, which are Mennonite, Salvation Army, Mormon, Jehovah’s Witness and Sikh.</p>
+<p>In the distribution of income, we can see that the graph is heavily right skewed. As we discussed in the data discussion, most people has lower income; which is 0 to 250,000. We can also find some outliers, which represent the high-income observations.</p>
+</div>
+<div id="discussion" class="section level1">
+<h1>Discussion</h1>
+<p>From the first graph, we find that Canada is a comprehensive countries with 23 different religions. Most of the people believe in Catholic, and a large amount of citizens have none religions. However, there are more people who have their religion.</p>
+<p>From the graph and data of income, we can see most people have income between 0 and 250,000. We notice that many people have 0 income, because most of these observations are students. Beside, people who have 500,000-1,000,000 income are rare, but their income is extremely higher than the others.</p>
+<p>In the survey of religion, there is a choice “Prefer not to answer”, and this might make the count of each religion less accurate. Also it is inappropriate to count people with 0 income when calculating the mean income because it makes the mean income lower than it suppose to be.</p>
+</div>
+<div id="weaknesses-and-next-steps" class="section level1">
+<h1>Weaknesses and next steps</h1>
+<p>Weaknesses
+1. We should not consider income=0 when we summary the data of income.
+2. The survey should consider not to have a “Prefer not to answer” option in the answer, which may influence the result.
+3. The sample size is too small to estimate the result of all Canada Citizen.</p>
+<p>Next steps:
+1. Filter out the 0 income observations if we want to explore on income data.
+2. Try to avoid confusing options in our survey.
+3. Increase sample size to better estimate the result we want.</p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p><span class="citation">Wickham et al. (2019)</span></p>
+<p><span class="citation">Tierney (2017)</span></p>
+<p><span class="citation">Hodgetts and Alexander (2020)</span></p>
+<p><span class="citation">Waring et al. (2020)</span></p>
+<p>JJ Allaire and Yihui Xie and Jonathan McPherson and Javier Luraschi and
+Kevin Ushey and Aron Atkins and Hadley Wickham and Joe Cheng and Winston
+Chang and Richard Iannone (2020). rmarkdown: Dynamic Documents for R. R
+package version 2.3. URL <a href="https://rmarkdown.rstudio.com" class="uri">https://rmarkdown.rstudio.com</a>.</p>
+<p>Yihui Xie and J.J. Allaire and Garrett Grolemund (2018). R Markdown: The
+Definitive Guide. Chapman and Hall/CRC. ISBN 9781138359338. URL
+<a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>.</p>
+<div id="refs" class="references">
+<div id="ref-citecesR">
+<p>Hodgetts, Paul A., and Rohan Alexander. 2020. <em>CesR: Access the Ces Datasets a Little Easier.</em></p>
+</div>
+<div id="ref-citevisdat">
+<p>Tierney, Nicholas. 2017. “Visdat: Visualising Whole Data Frames.” <em>JOSS</em> 2 (16): 355. <a href="https://doi.org/10.21105/joss.00355">https://doi.org/10.21105/joss.00355</a>.</p>
+</div>
+<div id="ref-citeskimr">
+<p>Waring, Elin, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia, Hao Zhu, and Shannon Ellis. 2020. <em>Skimr: Compact and Flexible Summaries of Data</em>.</p>
+</div>
+<div id="ref-citetidyverse">
+<p>Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. “Welcome to the tidyverse.” <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.</p>
+</div>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="../../../../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../../../../images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
