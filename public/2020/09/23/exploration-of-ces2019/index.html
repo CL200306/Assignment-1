@@ -10,7 +10,7 @@
 <meta property="og:title" content="Exploration of CES2019 - A Hugo website">
 
 
-  <link href='../../../../favicon.ico' rel='icon' type='image/x-icon'/>
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
 
 
 
@@ -27,8 +27,8 @@
 
 
 
-<link rel="stylesheet" href="../../../../css/fonts.css" media="all">
-<link rel="stylesheet" href="../../../../css/main.css" media="all">
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
 
 
 
@@ -37,8 +37,8 @@
     <div class="wrapper">
       <header class="header">
         <nav class="nav">
-  <a href="../../../../" class="nav-logo">
-    <img src="../../../../images/logo.png"
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
          width="50"
          height="50"
          alt="Logo">
@@ -46,7 +46,7 @@
 
   <ul class="nav-links">
     
-    <li><a href="../../../../about/">About</a></li>
+    <li><a href="/about/">About</a></li>
     
     <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
     
@@ -133,7 +133,7 @@ decon %&gt;% summarise(mean_income = mean(income), sd_income = sd(income), media
 <pre class="r"><code>decon_rein %&gt;% 
   ggplot(aes(x = religion))+
   geom_bar()+coord_flip()+labs( title = &quot;Distribution of religions in CES&quot;) </code></pre>
-<p><img src="../../../../post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Now, we want to see the distribution of income in 2019 CES.</p>
 <pre class="r"><code>decon %&gt;% 
   ggplot(aes(x = income)) +
@@ -144,7 +144,7 @@ decon %&gt;% summarise(mean_income = mean(income), sd_income = sd(income), media
        caption = &quot;Source: Stephenson, Harell, Rubenson, Loewen, 2020.&quot;) +
   theme_bw()
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="../../../../post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="graph-disscusion" class="section level1">
 <h1>Graph Disscusion</h1>
@@ -208,10 +208,10 @@ Definitive Guide. Chapman and Hall/CRC. ISBN 9781138359338. URL
       <footer class="footer">
         <ul class="footer-links">
           <li>
-            <a href="../../../../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
           </li>
           <li>
-            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../../../../images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
           </li>
         </ul>
       </footer>
